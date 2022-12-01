@@ -76,4 +76,10 @@ public class ProdutoController {
         List<Produto> produtos=       produtoRepository.getProductsByPrice(value);
         return new ResponseEntity<List<Produto>>(produtos,HttpStatus.OK);
     }
+
+    @GetMapping(value="/buscarTodosOsProdutos", produces = "application/json")
+    public ResponseEntity<List<Produto>> getTodosOsProdutos(){
+        List<Produto> produtos =       produtoRepository.getAllProducts();
+        return new ResponseEntity<List<Produto>>(produtos,HttpStatus.OK);
+    }
 }

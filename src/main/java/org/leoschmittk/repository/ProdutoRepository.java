@@ -14,4 +14,7 @@ public interface ProdutoRepository extends JpaRepository<Produto,Long> {
     @Query(value = "SELECT * FROM PRODUTO u WHERE u.valor = ?1", nativeQuery = true)
     ArrayList<Produto> getProductsByPrice(double value);
 
+
+    @Query(value = "SELECT * FROM PRODUTO", nativeQuery = true)
+    ArrayList<Produto> getAllProducts();
 }
