@@ -1,7 +1,9 @@
 package org.leoschmittk.controllers;
 
 
+import io.swagger.annotations.Api;
 import org.leoschmittk.model.Produto;
+import org.leoschmittk.repository.CategoriaRepository;
 import org.leoschmittk.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Api(tags = "Produto")
 @RestController
 @RequestMapping(value = "/produto")
 public class ProdutoController {
@@ -21,11 +24,27 @@ public class ProdutoController {
     @Autowired
     private ProdutoRepository produtoRepository;
 
+    @Autowired
+    private CategoriaRepository categoriaRepository;
+
     // cadastrar produtos
     @PostMapping(value = "/", produces = "application/json" )
     public ResponseEntity<Produto> cadastrar(@RequestBody Produto produto){
-        Produto prod = produtoRepository.save(produto);
-        return new ResponseEntity<Produto>(prod, HttpStatus.CREATED);
+        boolean isAble = false;
+        ArrayList<org.leoschmittk.model.Categoria> catList = (ArrayList<org.leoschmittk.model.Categoria>) categoriaRepository.findAll();
+        for(int i = 0;i<=catList.toArray().length-1;++i){
+            if(catList.get(i).getId()==produto.getCategoria_id()){
+                produto.setCategoria_nome(catList.get(i).getNome());
+                isAble = true;
+                break;
+            }
+
+        }
+        if (isAble){
+            Produto prod = produtoRepository.save(produto);
+            return new ResponseEntity<Produto>(prod, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
 

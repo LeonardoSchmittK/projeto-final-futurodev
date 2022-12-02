@@ -3,7 +3,7 @@ package org.leoschmittk.model;
 import javax.persistence.*;
 
 @Entity
-@Table
+@Table(name = "categoria")
 public class Categoria {
 
     @Id
@@ -15,6 +15,7 @@ public class Categoria {
 
     @Column(length = 120)
     private String descricao;
+
 
     public Long getId() {
         return id;

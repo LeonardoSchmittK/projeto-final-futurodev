@@ -1,5 +1,6 @@
 package org.leoschmittk.controllers;
 
+import io.swagger.annotations.Api;
 import org.leoschmittk.model.Categoria;
 import org.leoschmittk.model.Produto;
 import org.leoschmittk.repository.CategoriaRepository;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Api(tags = "Categoria")
 @RestController
 @RequestMapping(value = "/categoria")
 public class CategoriaController {
