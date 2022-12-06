@@ -16,8 +16,11 @@ public class Produto {
     }
 
     public String getTotalValue(){
-        ArrayList<org.leoschmittk.model.Produto> prodList = (ArrayList<org.leoschmittk.model.Produto>) produtoRepository.findAll();
 
+        ArrayList<org.leoschmittk.model.Produto> prodList = (ArrayList<org.leoschmittk.model.Produto>) produtoRepository.findAll();
+        if(prodList.size()<=0){
+            return "R$0.00";
+        }
         double totalValue = 0;
         for(int i = 0;i<=prodList.toArray().length-1;++i){
             if(prodList.get(i).getEstaComprado()==true){

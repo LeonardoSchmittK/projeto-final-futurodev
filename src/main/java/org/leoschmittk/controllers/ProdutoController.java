@@ -2,6 +2,7 @@ package org.leoschmittk.controllers;
 
 
 import io.swagger.annotations.Api;
+import org.leoschmittk.model.Categoria;
 import org.leoschmittk.model.Produto;
 import org.leoschmittk.repository.CategoriaRepository;
 import org.leoschmittk.repository.ProdutoRepository;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Api(tags = "Produto")
 @RestController
@@ -30,50 +32,41 @@ public class ProdutoController {
     // cadastrar produtos
     @PostMapping(value = "/", produces = "application/json" )
     public ResponseEntity<Produto> cadastrar(@RequestBody Produto produto){
-        boolean isAble = false;
-        ArrayList<org.leoschmittk.model.Categoria> catList = (ArrayList<org.leoschmittk.model.Categoria>) categoriaRepository.findAll();
-        for(int i = 0;i<=catList.toArray().length-1;++i){
-            if(catList.get(i).getId()==produto.getCategoria_id()){
-                produto.setCategoria_nome(catList.get(i).getNome());
-                isAble = true;
-                break;
-            }
+        Optional<Categoria> categoriaDeserved  = categoriaRepository.findById(produto.getCategoria_id());
+        produto.setCategoria_nome(categoriaDeserved.get().getNome());
+        Produto prodToSave = produto;
 
-        }
-        if (isAble){
-            Produto prod = produtoRepository.save(produto);
-            return new ResponseEntity<Produto>(prod, HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        Produto prod = produtoRepository.save(prodToSave);
+                return new ResponseEntity<Produto>(prod, HttpStatus.CREATED);
+
+
     }
 
 
     // resgatar produto por id
-    @GetMapping(value="/{idProduto}")
-    public ResponseEntity<Produto> getProdutoById(@PathVariable(value="idProduto") Long idProduto){
-        Produto pes = produtoRepository.findById(idProduto).get();
-        return new ResponseEntity<Produto>(pes,HttpStatus.OK);
+    @GetMapping(value="/{id}", produces = "application/json")
+    public ResponseEntity<Produto> getProdutoById(@PathVariable(value="id")  Long id){
+        Produto prod =       produtoRepository.findById(id).get();
+        return new ResponseEntity<Produto>(prod,HttpStatus.OK);
     }
 
-    @DeleteMapping(value="/")
+   @RequestMapping(value = "/{idProduto}", method = RequestMethod.DELETE)
     @ResponseBody
     public ResponseEntity<String> delete(@RequestParam Long idProduto){
         produtoRepository.deleteById(idProduto);
-        return new ResponseEntity<String>("Produto deletado com êxito!",HttpStatus.OK);
+        return new ResponseEntity<String>("Categoria deletada com êxito!",HttpStatus.OK);
     }
 
     @PutMapping(value="/{id}",produces = "application/json")
     public Produto atualizar(@RequestBody Produto produto, @PathVariable Long id){
-//        Produto prod = produtoRepository.save(produto);
-//        return new ResponseEntity<Produto>(prod,HttpStatus.OK);
-
         return produtoRepository.findById(id)
-                .map(address -> {
-                    address.setNome(produto.getNome());
-                    address.setEstaComprado(produto.getEstaComprado());
-                    address.setValor(produto.getValor());
+                .map(prod -> {
+                    prod.setNome(produto.getNome());
+                    prod.setEstaComprado(produto.getEstaComprado());
+                    prod.setValor(produto.getValor());
+                    prod.setCategoria_id(produto.getId());
 
-                    return produtoRepository.save(address);
+                    return produtoRepository.save(prod);
                 })
                 .orElseGet(() -> {
                     return produtoRepository.save(produto);

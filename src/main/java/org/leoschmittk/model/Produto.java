@@ -8,6 +8,7 @@ import java.util.Objects;
 @Table(name = "produto")
 public class Produto implements Serializable {
 
+    @Column(columnDefinition = "BINARY(16)")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,10 +20,11 @@ public class Produto implements Serializable {
     @JoinColumn(name = "categoria_nome", referencedColumnName = "nome",nullable = false)
     private Categoria categoria;
 
-    @Column
+
+    @Column(nullable = false)
     private Long categoria_id;
 
-    @Column(length = 120,insertable = false,updatable = false)
+    @Column(length = 120,insertable = false, updatable = false)
     private String categoria_nome;
 
     @Column(nullable = false)
@@ -30,6 +32,7 @@ public class Produto implements Serializable {
 
     @Column()
     private boolean estaComprado;
+
 
 
 //    @Override
@@ -106,4 +109,6 @@ public class Produto implements Serializable {
     public boolean isEstaComprado() {
         return estaComprado;
     }
+
+
 }
